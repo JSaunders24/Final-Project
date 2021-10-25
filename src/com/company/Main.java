@@ -14,6 +14,9 @@ public class Main {
     public static void main(String[] args) {
 	// write your code here
 
+        Scanner scan = new Scanner(System.in);
+
+//         String[] gameName = new String[Integer.parseInt(scan.next())];
          String gameName;
          String genre;
          String gameLength;
@@ -25,9 +28,19 @@ public class Main {
         System.out.println("You can choose to filter or sort your list by various variables like length of game or name \n");
 
         Scanner input = new Scanner(System.in);
-
+//        scan.nextLine();
         System.out.println("Enter the game's name: ");
-        gameName = input.next();
+        gameName = scan.nextLine();
+//        scan.nextLine();
+//        gameName[0] = input.next();
+
+//        for (int i = 0; i < gameName.length; i ++)
+//        {
+//            gameName[i] = scan.nextLine();
+//            System.out.println(gameName[i] + " ");
+//        }
+
+
 
         System.out.println("Game Name: " + gameName + " \n");
 
@@ -36,7 +49,7 @@ public class Main {
         System.out.println("Name: " + gameName + " Genre: " + genre + " \n");
 
         System.out.println("Enter the length of the game (Short, Medium, Long, Very Long) \n");
-        gameLength = input.next();
+        gameLength = scan.nextLine();
         System.out.println("Name: " + gameName + " Genre: " + genre + " Length: " + gameLength + " \n");
 
     }
