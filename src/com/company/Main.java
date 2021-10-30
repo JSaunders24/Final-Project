@@ -7,6 +7,7 @@
 package com.company;
 
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -20,6 +21,9 @@ public class Main {
          String gameName;
          String genre;
          String gameLength;
+         String[] nameArray = new String[1];
+         String[] genreArray = new String[1];
+         String[] lengthArray = new String[1];
 
 
        System.out.println("John Saunders Final Project: Backlogger \n");
@@ -31,26 +35,23 @@ public class Main {
 //        scan.nextLine();
         System.out.println("Enter the game's name: ");
         gameName = scan.nextLine();
-//        scan.nextLine();
-//        gameName[0] = input.next();
-
-//        for (int i = 0; i < gameName.length; i ++)
-//        {
-//            gameName[i] = scan.nextLine();
-//            System.out.println(gameName[i] + " ");
-//        }
-
+        nameArray[0] = gameName;
 
 
         System.out.println("Game Name: " + gameName + " \n");
 
         System.out.println("Enter the game's genre: ");
         genre = input.next();
+        genreArray[0] = genre;
         System.out.println("Name: " + gameName + " Genre: " + genre + " \n");
 
         System.out.println("Enter the length of the game (Short, Medium, Long, Very Long) \n");
         gameLength = scan.nextLine();
+        lengthArray[0] = gameLength;
         System.out.println("Name: " + gameName + " Genre: " + genre + " Length: " + gameLength + " \n");
+
+        System.out.println("Array Test \n");
+        System.out.println("Name: " + nameArray[0] + " Genre: " + genreArray[0] + " Length: " + lengthArray[0] + " \n");
 
     }
 }
