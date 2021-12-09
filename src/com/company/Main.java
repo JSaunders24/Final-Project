@@ -166,10 +166,10 @@ public class Main {
                     System.out.println("-------------------- \n");
                 }
 
-                ArrayList<GameInfo> showList = db.getData();
-                for (GameInfo game : showList){
-                    System.out.println(game.toString());
-                }
+//                ArrayList<GameInfo> showList = db.getData();
+//                for (GameInfo game : showList){
+//                    System.out.println(game.toString());
+//                }
 
             } else if (menu == 4) {
 
@@ -206,6 +206,11 @@ public class Main {
             }
 
             db.addData(newGame.getName(), newGame.getGenre(), newGame.getLength());
+            ArrayList<GameInfo> showList = db.getData();
+
+            for (GameInfo game : showList){
+                    System.out.println(game.toString());
+                }
 
             System.out.println("1. Add a game to list \n" +
                     "2. Remove a game from list \n" +
