@@ -9,6 +9,7 @@ package com.company;
 import models.GameInfo;
 import controllers.DataBase;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -23,20 +24,19 @@ public class Main {
 
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
         DataBase db = new DataBase("games.db");
         GameInfo newGame = new GameInfo(0, " ", " ", " ");
+
         db.createNewDatabase();
         db.addTables();
-
-
 
 
         Scanner scan = new Scanner(System.in);
 
 
-        String gameName;
+        String name;
         String genre;
         String gameLength;
         int count = 0;
@@ -57,6 +57,19 @@ public class Main {
         int menu = 0;
         int removeGame = 0;
 
+
+        int dbCount = 0;
+        Integer[] dbID = new Integer[100];
+
+        ArrayList<GameInfo> countList = db.getData();
+        for (GameInfo game : countList){
+            dbID[dbCount] = newGame.getId();
+            nameArray[dbCount] = newGame.getName();
+            genreArray[dbCount] = newGame.getGenre();
+            lengthArray[dbCount] = newGame.getLength();
+            dbCount++;
+        }
+        System.out.println("Games in database: " + dbCount + " \n");
 
         System.out.println("Use the numbers 1-6 for you menu options. \n");
         System.out.println("1. Add a game to list \n" +
@@ -80,11 +93,11 @@ public class Main {
 
 
                 System.out.println("Enter the game's name: ");
-                gameName = scan.nextLine();
-                newGame.setName(gameName);
+                name = scan.nextLine();
+                newGame.setName(name);
 
-                nameArray[count] = gameName.toUpperCase();
-                System.out.println("Game Name: " + gameName + " \n");
+                nameArray[count] = name.toUpperCase();
+                System.out.println("Game Name: " + name + " \n");
 
                 System.out.println("Enter the game's genre: ");
 
@@ -92,7 +105,7 @@ public class Main {
                 newGame.setGenre(genre.toUpperCase());
 
                 genreArray[count] = genre.toUpperCase(Locale.ROOT);
-                System.out.println("Name: " + gameName + " Genre: " + genre + " \n");
+                System.out.println("Name: " + name + " Genre: " + genre + " \n");
 
                 System.out.println("Enter the length of the game (use an integer for estimated number of hours needed for completion) \n");
                 hours = Integer.valueOf(input.next());
@@ -130,46 +143,61 @@ public class Main {
 
                 }
 
-//                db.addData(newGame.getName(), newGame.getGenre(), newGame.getLength());
+
+                db.addData(newGame.getName(), newGame.getGenre(), newGame.getLength());
 
 
                 count++;
 
             } else if (menu == 2) {
                 System.out.println("Remove a game from list \n");
-                System.out.println("Which game would like to remove? Enter the number corresponding with the game name \n");
+//                System.out.println("Which game would like to remove? Enter the number corresponding with the game name \n");
+//
+//                for (int i = 0; i < count; i++) {
+//                    System.out.println(i + ". " + nameArray[i]);
+//                    System.out.println(" \n");
+//                }
+//                removeGame = input.nextInt();
+//
+//                while (removeGame < 0 || removeGame > count) {
+//                    System.out.println("Invalid input. Please choose a number associated with a game on the list \n");
+//                    removeGame = input.nextInt();
+//                }
+//
+//
+//                nameArray = deleteGame(nameArray, removeGame, count);
+//                genreArray = deleteGenre(genreArray, removeGame, count);
+//                lengthArray = deleteLength(lengthArray, removeGame, count);
+//                count--;
 
-                for (int i = 0; i < count; i++) {
-                    System.out.println(i + ". " + nameArray[i]);
-                    System.out.println(" \n");
+                ArrayList<GameInfo> showList = db.getData();
+
+                for (GameInfo game : showList){
+                    System.out.println(game.toString());
                 }
+
+
+                System.out.println("Choose a game ID number to delete from data base \n");
                 removeGame = input.nextInt();
 
-                while (removeGame < 0 || removeGame > count) {
-                    System.out.println("Invalid input. Please choose a number associated with a game on the list \n");
-                    removeGame = input.nextInt();
-                }
+                db.deleteGame(removeGame);
 
-
-                nameArray = deleteGame(nameArray, removeGame, count);
-                genreArray = deleteGenre(genreArray, removeGame, count);
-                lengthArray = deleteLength(lengthArray, removeGame, count);
-                count--;
 
 
             } else if (menu == 3) {
                 System.out.println("Show List \n");
 
 
-                for (int i = 0; i < count; i++) {
-                    System.out.println("Name: " + nameArray[i] + " \n" + "Genre: " + genreArray[i] + " \n" + "Length: " + lengthArray[i] + " \n");
-                    System.out.println("-------------------- \n");
-                }
-
-//                ArrayList<GameInfo> showList = db.getData();
-//                for (GameInfo game : showList){
-//                    System.out.println(game.toString());
+//                for (int i = 0; i < dbCount; i++) {
+//                    System.out.println("Name: " + nameArray[i] + " \n" + "Genre: " + genreArray[i] + " \n" + "Length: " + lengthArray[i] + " \n");
+//                    System.out.println("-------------------- \n");
 //                }
+
+                ArrayList<GameInfo> showList = db.getData();
+
+                for (GameInfo game : showList){
+                    System.out.println(game.toString());
+                }
 
             } else if (menu == 4) {
 
@@ -188,16 +216,18 @@ public class Main {
 
 
 
-
             } else if (menu == 5) {
 
                 System.out.println("Choose a random game \n");
                 int min = 0;
-                int max = count;
+                int max = dbCount;
                 Random rand = new Random();
                 int randomGame = rand.nextInt(max - min) + min;
 
-                System.out.println("You're random game is: " + nameArray[randomGame] + " ! \n");
+                ArrayList<GameInfo> randPick = db.pickRandom();
+
+
+                System.out.println("You're random game is: " + randPick + " ! \n");
 
             } else if (menu == 6) {
 
@@ -205,12 +235,6 @@ public class Main {
                 System.exit(0);
             }
 
-            db.addData(newGame.getName(), newGame.getGenre(), newGame.getLength());
-            ArrayList<GameInfo> showList = db.getData();
-
-            for (GameInfo game : showList){
-                    System.out.println(game.toString());
-                }
 
             System.out.println("1. Add a game to list \n" +
                     "2. Remove a game from list \n" +
@@ -231,14 +255,6 @@ public class Main {
     }
     public static String[] deleteGame(String[] nameArray, Integer removeGame, Integer count){
 
-//        String[] temp = new String[count];
-//
-//        for (int i = 0; i < count; i++){
-//            if (i != removeGame){
-//                temp[i] = nameArray[i];
-//            }
-//        }
-//        temp[count - 1] = null;
 
         for (int i =0; i < count; i++){
             if (i == removeGame){
@@ -255,14 +271,6 @@ public class Main {
 
     public static String[] deleteGenre(String[] genreArray, Integer removeGame, Integer count){
 
-//        String[] temp = new String[count];
-//
-//        for (int i = 0; i < count; i++){
-//            if (i != removeGame){
-//                temp[i] = genreArray[i];
-//            }
-//        }
-//        temp[count - 1] = null;
 
         for (int i =0; i < count; i++){
             if (i == removeGame){
@@ -279,14 +287,6 @@ public class Main {
 
     public static String[] deleteLength(String[] lengthArray, Integer removeGame, Integer count){
 
-//        String[] temp = new String[count];
-//
-//        for (int i = 0; i < count; i++){
-//            if (i != removeGame){
-//                temp[i] = lengthArray[i];
-//            }
-//        }
-//        temp[count - 1] = null;
 
         for (int i =0; i < count; i++){
             if (i == removeGame){

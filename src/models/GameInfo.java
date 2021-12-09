@@ -2,13 +2,13 @@ package models;
 
 public class GameInfo {
     private int id;
-    private String gameName;
+    private String name;
     private String genre;
     private String length;
 
-    public GameInfo(int id, String gameName, String genre, String length) {
+    public GameInfo(int id, String name, String genre, String length) {
         this.id = id;
-        this.gameName = gameName;
+        this.name = name;
         this.genre = genre;
         this.length = length;
     }
@@ -22,11 +22,11 @@ public class GameInfo {
     }
 
     public String getName() {
-        return gameName;
+        return name;
     }
 
     public void setName(String gameName) {
-        this.gameName = gameName;
+        this.name = gameName;
     }
 
     public String getGenre() {
@@ -47,8 +47,10 @@ public class GameInfo {
 
     @Override
     public String toString(){
-        return "The game with an id of " + id + " and called " + gameName  + " Genre: " + genre + " Length: " + length + ".";
+        return " ID: " + id + " Name: " + name  + " Genre: " + genre + " Length: " + length + ".";
     }
+
+
 
 
 }

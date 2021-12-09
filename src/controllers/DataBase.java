@@ -60,9 +60,9 @@ public class DataBase {
             }
         }
 
-        public void addData(String gameName, String genre, String length){
+        public void addData(String name, String genre, String length){
 
-            String sql = "insert into Game Info(gameName, genre, length) VALUES ('" + gameName + "', '" + genre + "', '" + length + "');";
+            String sql = "insert into games (name, genre, length) VALUES ('" + name + "', '" + genre + "', '" + length + "');";
             System.out.println(sql);
             try(Connection conn = DriverManager.getConnection(url)){
                 Statement statement = conn.createStatement();
@@ -76,7 +76,7 @@ public class DataBase {
         }
 
         public ArrayList<GameInfo> getData(){
-            String sql = "SELECT id, name, genre, length FROM GameInfo";
+            String sql = "SELECT id, name, genre, length FROM games";
             ArrayList<GameInfo> gameList = new ArrayList<>();
 
             try(Connection conn = DriverManager.getConnection(url)){
@@ -85,10 +85,10 @@ public class DataBase {
                 while(games.next())
                 {
                     int id = games.getInt("id");
-                    String gameName = games.getString("Name");
+                    String name = games.getString("Name");
                     String genre = games.getString("Genre");
                     String length = games.getString("Length");
-                    GameInfo game = new GameInfo(id, gameName, genre, length);
+                    GameInfo game = new GameInfo(id, name, genre, length);
 
                     gameList.add(game);
                 }
@@ -99,5 +99,68 @@ public class DataBase {
 
             return gameList;
         }
+
+
+        private Connection connectDB(String dbName){
+            this.dbName = dbName;
+            this.url = "jdbc:sqlite:C:/sqlite/db/" + dbName;
+            Connection conn = null;
+            try{
+                conn = DriverManager.getConnection((url));
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+
+            return conn;
+        }
+
+
+
+
+        public void deleteGame(int id) throws SQLException {
+            String sql = "DELETE FROM games WHERE id = ?";
+
+            try (Connection connectDB = this.connectDB(dbName)) {
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } ;
+            PreparedStatement prepState = connectDB(dbName).prepareStatement(sql);{
+
+            prepState.setInt(1, id);
+            prepState.executeUpdate();
+
+
+            }
+
+        }
+
+        public ArrayList<GameInfo> pickRandom() throws SQLException {
+            String sql = "SELECT id, name, genre, length FROM games ORDER BY RANDOM() LIMIT 1";
+
+
+            ArrayList<GameInfo> gameList = new ArrayList<>();
+
+            try(Connection conn = DriverManager.getConnection(url)){
+                Statement statement = conn.createStatement();
+                ResultSet games = statement.executeQuery(sql);
+                while(games.next())
+                {
+                    int id = games.getInt("id");
+                    String name = games.getString("Name");
+                    String genre = games.getString("Genre");
+                    String length = games.getString("Length");
+                    GameInfo game = new GameInfo(id, name, genre, length);
+
+                    gameList.add(game);
+                }
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+            return gameList;
+        }
+
+
 
 }
