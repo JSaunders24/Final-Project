@@ -6,8 +6,12 @@
 
 package com.company;
 
+import models.GameInfo;
+import controllers.DataBase;
 
 import java.util.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 
 public class Main {
@@ -20,11 +24,18 @@ public class Main {
 
 
     public static void main(String[] args) {
-        // write your code here
+
+        DataBase db = new DataBase("games.db");
+        GameInfo newGame = new GameInfo(0, " ", " ", " ");
+        db.createNewDatabase();
+        db.addTables();
+
+
+
 
         Scanner scan = new Scanner(System.in);
 
-//         String[] gameName = new String[Integer.parseInt(scan.next())];
+
         String gameName;
         String genre;
         String gameLength;
@@ -45,6 +56,8 @@ public class Main {
 
         int menu = 0;
         int removeGame = 0;
+
+
         System.out.println("Use the numbers 1-6 for you menu options. \n");
         System.out.println("1. Add a game to list \n" +
                 "2. Remove a game from list \n" +
@@ -52,7 +65,9 @@ public class Main {
                 "4. Filter games \n" +
                 "5. Choose a random game \n" +
                 "6. Exit Program \n");
+
         menu = input.nextInt();
+
         while (menu != 1 && menu != 2 && menu != 3 && menu != 4 && menu != 5 && menu != 6) {
             System.out.println("incorrect input. Please choose a menu option only using numbers 1-6");
             menu = input.nextInt();
@@ -66,12 +81,16 @@ public class Main {
 
                 System.out.println("Enter the game's name: ");
                 gameName = scan.nextLine();
+                newGame.setName(gameName);
 
                 nameArray[count] = gameName.toUpperCase();
                 System.out.println("Game Name: " + gameName + " \n");
 
                 System.out.println("Enter the game's genre: ");
+
                 genre = scan.nextLine();
+                newGame.setGenre(genre.toUpperCase());
+
                 genreArray[count] = genre.toUpperCase(Locale.ROOT);
                 System.out.println("Name: " + gameName + " Genre: " + genre + " \n");
 
@@ -86,14 +105,33 @@ public class Main {
                 System.out.println("Hours needed: " + hours + " \n");
 
                 if (hours >= 1 && hours <= 10) {
+
                     lengthArray[count] = "Short";
+                    gameLength = lengthArray[count];
+                    newGame.setLength(gameLength);
+
                 } else if (hours > 10 && hours <= 20) {
+
                     lengthArray[count] = "Medium";
+                    gameLength = lengthArray[count];
+                    newGame.setLength(gameLength);
+
                 } else if (hours > 20 && hours <= 35) {
+
                     lengthArray[count] = "Long";
+                    gameLength = lengthArray[count];
+                    newGame.setLength(gameLength);
+
                 } else if (hours > 35) {
+
                     lengthArray[count] = "Very Long";
+                    gameLength = lengthArray[count];
+                    newGame.setLength(gameLength);
+
                 }
+
+//                db.addData(newGame.getName(), newGame.getGenre(), newGame.getLength());
+
 
                 count++;
 
@@ -128,11 +166,19 @@ public class Main {
                     System.out.println("-------------------- \n");
                 }
 
+                ArrayList<GameInfo> showList = db.getData();
+                for (GameInfo game : showList){
+                    System.out.println(game.toString());
+                }
+
             } else if (menu == 4) {
+
                 int filterChoice = 0;
+
                 System.out.println("Filter games \n");
                 System.out.println("What would you like to filter by? genre or length? \n");
                 System.out.println("1 for genre. 2 for length \n");
+
                 filterChoice = input.nextInt();
 
                 while (filterChoice != 1 && filterChoice != 2){
@@ -144,11 +190,12 @@ public class Main {
 
 
             } else if (menu == 5) {
+
                 System.out.println("Choose a random game \n");
                 int min = 0;
                 int max = count;
                 Random rand = new Random();
-                 int randomGame = rand.nextInt(max - min) + min;
+                int randomGame = rand.nextInt(max - min) + min;
 
                 System.out.println("You're random game is: " + nameArray[randomGame] + " ! \n");
 
@@ -158,17 +205,22 @@ public class Main {
                 System.exit(0);
             }
 
+            db.addData(newGame.getName(), newGame.getGenre(), newGame.getLength());
+
             System.out.println("1. Add a game to list \n" +
                     "2. Remove a game from list \n" +
                     "3. Show list \n" +
                     "4. Filter games \n" +
                     "5. Choose a random game \n" +
                     "6. Exit Program \n");
+
             menu = input.nextInt();
+
             while (menu != 1 && menu != 2 && menu != 3 && menu != 4 && menu != 5 && menu != 6) {
                 System.out.println("incorrect input. Please choose a menu option only using numbers 1-6");
                 menu = input.nextInt();
             }
+
         }
 
     }
@@ -191,9 +243,6 @@ public class Main {
                 break;
             }
         }
-
-
-
 
         return nameArray;
 
