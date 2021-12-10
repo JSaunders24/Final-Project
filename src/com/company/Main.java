@@ -54,7 +54,7 @@ public class Main {
         Scanner input = new Scanner(System.in);
 //        scan.nextLine();
 
-        int menu = 0;
+        Integer menu = 0;
         int removeGame = 0;
 
 
@@ -81,6 +81,11 @@ public class Main {
 
         menu = input.nextInt();
 
+//        while (!(input.hasNextInt())){
+//            System.out.println("Invalid input. Only enter a number. \n");
+//            menu = input.nextInt();
+//        }
+
         while (menu != 1 && menu != 2 && menu != 3 && menu != 4 && menu != 5 && menu != 6) {
             System.out.println("incorrect input. Please choose a menu option only using numbers 1-6");
             menu = input.nextInt();
@@ -90,11 +95,23 @@ public class Main {
 
             if (menu == 1) {
                 System.out.println("Add a game \n");
-
+                boolean nameCheck;
 
                 System.out.println("Enter the game's name: ");
                 name = scan.nextLine();
-                newGame.setName(name);
+
+                nameCheck = db.nameCheck(name);
+
+                while (nameCheck == true){
+                    System.out.println("Enter a valid game that is not already on the list \n");
+                    name = scan.nextLine();
+                    nameCheck = db.nameCheck(name);
+                }
+
+
+                System.out.println("This game is new and can be added to the list \n");
+                newGame.setName(name.toLowerCase());
+
 
                 nameArray[count] = name.toUpperCase();
                 System.out.println("Game Name: " + name + " \n");
@@ -177,8 +194,20 @@ public class Main {
                 }
 
 
+
                 System.out.println("Choose a game ID number to delete from data base \n");
                 removeGame = input.nextInt();
+                boolean idCheck = db.idCheck(removeGame);
+
+                while (idCheck == false){
+                    System.out.println("Enter a valid ID that is associated with the game you wish to remove \n");
+                    removeGame = input.nextInt();
+                    idCheck = db.idCheck(removeGame);
+                }
+
+                if (idCheck == true){
+                    System.out.println("That ID is valid. Removing game \n");
+                }
 
                 db.deleteGame(removeGame);
 
@@ -223,11 +252,16 @@ public class Main {
                 int max = dbCount;
                 Random rand = new Random();
                 int randomGame = rand.nextInt(max - min) + min;
+                int randomID = 0;
+                String randomName;
 
-                ArrayList<GameInfo> randPick = db.pickRandom();
 
 
-                System.out.println("You're random game is: " + randPick + " ! \n");
+                randomID = db.randID();
+                System.out.println("Random ID: " + randomID + " \n");
+                randomName = db.randName(randomID);
+
+                System.out.println("You're random game is: " + randomName + " ! \n");
 
             } else if (menu == 6) {
 

@@ -134,32 +134,151 @@ public class DataBase {
 
         }
 
-        public ArrayList<GameInfo> pickRandom() throws SQLException {
-            String sql = "SELECT id, name, genre, length FROM games ORDER BY RANDOM() LIMIT 1";
+//        public ArrayList<GameInfo> pickRandom() throws SQLException {
+//            String sql = "SELECT id, name, genre, length FROM games ORDER BY RANDOM() LIMIT 1";
+//
+//
+//            ArrayList<GameInfo> gameList = new ArrayList<>();
+//
+//            try(Connection conn = DriverManager.getConnection(url)){
+//                Statement statement = conn.createStatement();
+//                ResultSet games = statement.executeQuery(sql);
+//                while(games.next())
+//                {
+//                    int id = games.getInt("id");
+//                    String name = games.getString("Name");
+//                    String genre = games.getString("Genre");
+//                    String length = games.getString("Length");
+//                    GameInfo game = new GameInfo(id, name, genre, length);
+//
+//                    gameList.add(game);
+//                }
+//
+//            } catch (SQLException throwables) {
+//                throwables.printStackTrace();
+//            }
+//
+//            return gameList;
+//        }
 
 
-            ArrayList<GameInfo> gameList = new ArrayList<>();
+        public Boolean nameCheck(String name) throws SQLException {
+            String sql = "SELECT EXISTS (SELECT 1 FROM games WHERE name = ?)";
+            String boolCheck = name;
+            boolean exists = false;
 
+            try (Connection connectDB = this.connectDB(dbName)) {
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            try (PreparedStatement prepState = connectDB(dbName).prepareStatement(sql)) {
+                {
+                    prepState.setString(1, boolCheck);
+                    ResultSet result = prepState.executeQuery();
+
+                    if (result.next()) {
+                        boolean check = result.getBoolean(1);
+                        String checkStatement;
+
+
+                        if (check == true){
+                            checkStatement = "Name: " + boolCheck + " already exists ";
+
+                            System.out.println(checkStatement);
+                            exists = true;
+                        }
+                        else {
+                            checkStatement = "Name: " + boolCheck + " is new ";
+                            System.out.println(checkStatement);
+                            exists = false;
+                        }
+
+
+                    }
+
+                    return exists;
+                }
+            }
+        }
+
+        public Integer randID() throws SQLException{
+            String sql = "SELECT id FROM games ORDER BY RANDOM() LIMIT 1";
+            int randomID = 0;
             try(Connection conn = DriverManager.getConnection(url)){
                 Statement statement = conn.createStatement();
-                ResultSet games = statement.executeQuery(sql);
-                while(games.next())
+                ResultSet randID = statement.executeQuery(sql);
+                while(randID.next())
                 {
-                    int id = games.getInt("id");
-                    String name = games.getString("Name");
-                    String genre = games.getString("Genre");
-                    String length = games.getString("Length");
-                    GameInfo game = new GameInfo(id, name, genre, length);
+                    randomID = randID.getInt("id");
 
-                    gameList.add(game);
                 }
 
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
 
-            return gameList;
+            return randomID;
         }
+
+    public String randName(int id) throws SQLException{
+        String sql = "SELECT name FROM games WHERE id = " + id;
+        String rName = " ";
+        try(Connection conn = DriverManager.getConnection(url)){
+            Statement statement = conn.createStatement();
+            ResultSet randName = statement.executeQuery(sql);
+            while(randName.next())
+            {
+                rName = randName.getString("name");
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return rName;
+    }
+
+    public Boolean idCheck(int id) throws SQLException {
+        String sql = "SELECT EXISTS (SELECT 1 FROM games WHERE id = ?)";
+        int boolCheck = id;
+        boolean exists = false;
+
+        try (Connection connectDB = this.connectDB(dbName)) {
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        try (PreparedStatement prepState = connectDB(dbName).prepareStatement(sql)) {
+            {
+                prepState.setInt(1, boolCheck);
+                ResultSet result = prepState.executeQuery();
+
+                if (result.next()) {
+                    boolean check = result.getBoolean(1);
+                    String checkStatement;
+
+
+                    if (check == true){
+                        checkStatement = "ID " + boolCheck + " is Valid " + check;
+
+                        System.out.println(checkStatement);
+                        exists = true;
+                    }
+                    else {
+                        checkStatement = "ID " + boolCheck + " is Invalid " + check;
+                        System.out.println(checkStatement);
+                        exists = false;
+                    }
+
+
+                }
+
+                return exists;
+            }
+        }
+    }
+
+
 
 
 
