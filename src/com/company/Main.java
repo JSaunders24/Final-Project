@@ -160,7 +160,6 @@ public class Main {
 
                 }
 
-
                 db.addData(newGame.getName(), newGame.getGenre(), newGame.getLength());
 
 
@@ -194,7 +193,6 @@ public class Main {
                 }
 
 
-
                 System.out.println("Choose a game ID number to delete from data base \n");
                 removeGame = input.nextInt();
                 boolean idCheck = db.idCheck(removeGame);
@@ -211,8 +209,6 @@ public class Main {
 
                 db.deleteGame(removeGame);
 
-
-
             } else if (menu == 3) {
                 System.out.println("Show List \n");
 
@@ -223,10 +219,12 @@ public class Main {
 //                }
 
                 ArrayList<GameInfo> showList = db.getData();
-
+                System.out.println("-------------------------------------------------- ");
                 for (GameInfo game : showList){
                     System.out.println(game.toString());
                 }
+//                System.out.println(" \n");
+                System.out.println("-------------------------------------------------- \n \n");
 
             } else if (menu == 4) {
 
@@ -242,7 +240,6 @@ public class Main {
                     System.out.println("Invalid choice. Choose 1 or 2 \n");
                     filterChoice = input.nextInt();
                 }
-
 
 
             } else if (menu == 5) {

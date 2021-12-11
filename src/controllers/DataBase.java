@@ -182,13 +182,13 @@ public class DataBase {
 
 
                         if (check == true){
-                            checkStatement = "Name: " + boolCheck + " already exists ";
+                            checkStatement = "Name: " + boolCheck + " already exists. ";
 
                             System.out.println(checkStatement);
                             exists = true;
                         }
                         else {
-                            checkStatement = "Name: " + boolCheck + " is new ";
+                            checkStatement = "Name: " + boolCheck + " is new. ";
                             System.out.println(checkStatement);
                             exists = false;
                         }
@@ -259,13 +259,13 @@ public class DataBase {
 
 
                     if (check == true){
-                        checkStatement = "ID " + boolCheck + " is Valid " + check;
+                        checkStatement = "ID " + boolCheck + " is Valid. " + check;
 
                         System.out.println(checkStatement);
                         exists = true;
                     }
                     else {
-                        checkStatement = "ID " + boolCheck + " is Invalid " + check;
+                        checkStatement = "ID " + boolCheck + " is Invalid. " + check;
                         System.out.println(checkStatement);
                         exists = false;
                     }
