@@ -43,12 +43,13 @@ public class DataBase {
 
         public void addTables(){
 
-            String sql = "CREATE TABLE IF NOT EXISTS games (\n"
-                    + "	id integer PRIMARY KEY,\n"
-                    + "	name text NOT NULL,\n"
-                    + "	genre text NOT NULL,\n"
-                    + " length text NOT NULL\n"
-                    + ");";
+            String sql = """
+                    CREATE TABLE IF NOT EXISTS games (
+                    	id integer PRIMARY KEY,
+                    	name text NOT NULL,
+                    	genre text NOT NULL,
+                     length text NOT NULL
+                    );""";
 
             try(Connection conn = DriverManager.getConnection(url)){
                 Statement statement = conn.createStatement();
@@ -115,65 +116,27 @@ public class DataBase {
         }
 
 
-
-
         public void deleteGame(int id) throws SQLException {
             String sql = "DELETE FROM games WHERE id = ?";
 
-            try (Connection connectDB = this.connectDB(dbName)) {
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            } ;
             PreparedStatement prepState = connectDB(dbName).prepareStatement(sql);{
 
             prepState.setInt(1, id);
             prepState.executeUpdate();
 
-
             }
 
         }
 
-//        public ArrayList<GameInfo> pickRandom() throws SQLException {
-//            String sql = "SELECT id, name, genre, length FROM games ORDER BY RANDOM() LIMIT 1";
-//
-//
-//            ArrayList<GameInfo> gameList = new ArrayList<>();
-//
-//            try(Connection conn = DriverManager.getConnection(url)){
-//                Statement statement = conn.createStatement();
-//                ResultSet games = statement.executeQuery(sql);
-//                while(games.next())
-//                {
-//                    int id = games.getInt("id");
-//                    String name = games.getString("Name");
-//                    String genre = games.getString("Genre");
-//                    String length = games.getString("Length");
-//                    GameInfo game = new GameInfo(id, name, genre, length);
-//
-//                    gameList.add(game);
-//                }
-//
-//            } catch (SQLException throwables) {
-//                throwables.printStackTrace();
-//            }
-//
-//            return gameList;
-//        }
-
 
         public Boolean nameCheck(String name) throws SQLException {
             String sql = "SELECT EXISTS (SELECT 1 FROM games WHERE name = ?)";
-            String boolCheck = name;
             boolean exists = false;
 
-            try (Connection connectDB = this.connectDB(dbName)) {
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+
             try (PreparedStatement prepState = connectDB(dbName).prepareStatement(sql)) {
                 {
-                    prepState.setString(1, boolCheck);
+                    prepState.setString(1, name);
                     ResultSet result = prepState.executeQuery();
 
                     if (result.next()) {
@@ -181,16 +144,16 @@ public class DataBase {
                         String checkStatement;
 
 
-                        if (check == true){
-                            checkStatement = "Name: " + boolCheck + " already exists. ";
+                        if (check){
+                            checkStatement = "Name: " + name + " already exists. ";
 
                             System.out.println(checkStatement);
                             exists = true;
                         }
                         else {
-                            checkStatement = "Name: " + boolCheck + " is new. ";
+                            checkStatement = "Name: " + name + " is new. ";
                             System.out.println(checkStatement);
-                            exists = false;
+//
                         }
 
 
@@ -201,7 +164,42 @@ public class DataBase {
             }
         }
 
-        public Integer randID() throws SQLException{
+    public Boolean genreCheck(String genre) throws SQLException {
+        String sql = "SELECT EXISTS (SELECT 1 FROM games WHERE genre = ?)";
+        boolean exists = false;
+
+        try (PreparedStatement prepState = connectDB(dbName).prepareStatement(sql)) {
+            {
+                prepState.setString(1, genre);
+                ResultSet result = prepState.executeQuery();
+
+                if (result.next()) {
+                    boolean check = result.getBoolean(1);
+                    String checkStatement;
+
+
+                    if (check){
+                        checkStatement = "Genre: " + genre + " is valid. ";
+
+                        System.out.println(checkStatement);
+                        exists = true;
+                    }
+                    else {
+                        checkStatement = "Genre: " + genre + " doesn't exist. ";
+                        System.out.println(checkStatement);
+//                        exists = false;
+                    }
+
+
+                }
+
+                return exists;
+            }
+        }
+    }
+
+
+        public Integer randID() {
             String sql = "SELECT id FROM games ORDER BY RANDOM() LIMIT 1";
             int randomID = 0;
             try(Connection conn = DriverManager.getConnection(url)){
@@ -220,7 +218,7 @@ public class DataBase {
             return randomID;
         }
 
-    public String randName(int id) throws SQLException{
+    public String randName(int id) {
         String sql = "SELECT name FROM games WHERE id = " + id;
         String rName = " ";
         try(Connection conn = DriverManager.getConnection(url)){
@@ -241,16 +239,12 @@ public class DataBase {
 
     public Boolean idCheck(int id) throws SQLException {
         String sql = "SELECT EXISTS (SELECT 1 FROM games WHERE id = ?)";
-        int boolCheck = id;
         boolean exists = false;
 
-        try (Connection connectDB = this.connectDB(dbName)) {
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+
         try (PreparedStatement prepState = connectDB(dbName).prepareStatement(sql)) {
             {
-                prepState.setInt(1, boolCheck);
+                prepState.setInt(1, id);
                 ResultSet result = prepState.executeQuery();
 
                 if (result.next()) {
@@ -258,16 +252,16 @@ public class DataBase {
                     String checkStatement;
 
 
-                    if (check == true){
-                        checkStatement = "ID " + boolCheck + " is Valid. " + check;
+                    if (check){
+                        checkStatement = "ID " + id + " is Valid. ";
 
                         System.out.println(checkStatement);
                         exists = true;
                     }
                     else {
-                        checkStatement = "ID " + boolCheck + " is Invalid. " + check;
+                        checkStatement = "ID " + id + " is Invalid. ";
                         System.out.println(checkStatement);
-                        exists = false;
+
                     }
 
 
@@ -278,8 +272,63 @@ public class DataBase {
         }
     }
 
+    public ArrayList<GameInfo> filterGenre(String choice) {
+        ArrayList<GameInfo> filterList = new ArrayList<>();
+        String sql = "SELECT id, name, genre, length FROM games WHERE genre = ?";
+        try(PreparedStatement prepState = connectDB(dbName).prepareStatement(sql)){
 
 
+            prepState.setString(1, choice);
+            ResultSet filtGenre = prepState.executeQuery();
+
+            while (filtGenre.next())
+            {
+
+                int id = filtGenre.getInt("id");
+                String name = filtGenre.getString("Name");
+               String genre = filtGenre.getString("Genre");
+               String length = filtGenre.getString("Length");
+               GameInfo game = new GameInfo(id, name, genre, length);
+
+               filterList.add(game);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return filterList;
+
+    }
+
+    public ArrayList<GameInfo> filterLength(String choice) {
+        ArrayList<GameInfo> filterList = new ArrayList<>();
+        String sql = "SELECT id, name, genre, length FROM games WHERE length = ?";
+        try(PreparedStatement prepState = connectDB(dbName).prepareStatement(sql)){
+
+
+            prepState.setString(1, choice);
+            ResultSet filtGenre = prepState.executeQuery();
+
+            while (filtGenre.next())
+            {
+
+                int id = filtGenre.getInt("id");
+                String name = filtGenre.getString("Name");
+                String genre = filtGenre.getString("Genre");
+                String length = filtGenre.getString("Length");
+                GameInfo game = new GameInfo(id, name, genre, length);
+
+                filterList.add(game);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return filterList;
+
+    }
 
 
 }
