@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 
-
 public class MenuCmds {
 
     Scanner scan = new Scanner(System.in);

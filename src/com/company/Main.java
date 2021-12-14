@@ -65,12 +65,9 @@ public class Main {
                 command.addAGame(newGame, db);
 
 
-
-
             } else if (menu.matches("[2]")) {
                 // Allows user to remove game from list
                 command.removeAGame(db);
-
 
 
             } else if (menu.matches("[3]")) {
@@ -78,14 +75,10 @@ public class Main {
                 command.showList(db);
 
 
-
             } else if (menu.matches("[4]")) {
                 // Choose to filter list based on genre or length
 
                 command.filterList(db);
-
-
-
 
             } else {
 
@@ -93,10 +86,7 @@ public class Main {
 
                 command.pickRandomGame(db);
 
-
-
             }
-
 
             System.out.println("""
                     1. Add a game to list\s
@@ -115,26 +105,17 @@ public class Main {
             }
             System.out.println("Valid \n");
 
-//            menu = input.nextLine();
-
             // Check if menu input is valid
-//        while (menu != "1" && menu != "2" && menu != "3" && menu != "4" && menu != "5" && menu != "6") {
+
             while (!menu.matches("[1-6]+")){
                 System.out.println("incorrect input. Please choose a menu option only using numbers 1-6");
                 menu = input.next();
 
             }
 
-
-//            while (menu != "1" && menu != "2" && menu != "3" && menu != "4" && menu != "5" && menu != "6") {
-//                System.out.println("incorrect input. Please choose a menu option only using numbers 1-6");
-//                menu = input.nextLine();
-//            }
-
         }
 
         command.exitProgram();
-//        System.out.println("Exiting Program. Goodbye!");
 
     }
 
