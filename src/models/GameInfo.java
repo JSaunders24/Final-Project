@@ -1,7 +1,7 @@
 package models;
 
 public class GameInfo {
-    private int id;
+    private final int id;
     private String name;
     private String genre;
     private String length;
@@ -13,13 +13,13 @@ public class GameInfo {
         this.length = length;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+//    public int getId() {
+//        return id;
+//    }
+//
+//    public void setId(int id) {
+//        this.id = id;
+//    }
 
     public String getName() {
         return name;

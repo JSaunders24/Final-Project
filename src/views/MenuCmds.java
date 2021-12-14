@@ -18,7 +18,10 @@ public void programIntro(){
     System.out.println("After you enter the name, you can select genre, and length of the game");
     System.out.println("You can choose to filter your list by variables like length of game or genre \n");
     System.out.println("NOTE 1: This program uses a SQLite database and will require the user to have a SQLite JDBC driver installed on their device. \n");
-    System.out.println("NOTE 2: It is recommended to add at least 1 game to your list before using other menu options \n");
+    System.out.println("""
+            NOTE 2: It is recommended to add at least 1 game to your list before using other menu options\s
+            The program will still run with an empty list, however the program will not run certain methods unless there is at least one game on the list\s
+            """);
 
 
 }
@@ -54,7 +57,7 @@ public void addAGame(GameInfo newGame, DataBase db) throws SQLException {
 
     System.out.println("Game Name: " + name + " \n");
 
-    System.out.println("Enter the game's genre: ");
+    System.out.println("Enter the game's genre (RPG, racing, shooter, sports, strategy, etc.) ");
 
     genre = scan.nextLine();
     newGame.setGenre(genre.toUpperCase());
@@ -114,145 +117,187 @@ public void removeAGame(DataBase db) throws SQLException {
         System.out.println(game.toString());
     }
 
+    Boolean empty = db.emptyCheck();
 
-    System.out.println("Choose a game ID number to delete from data base \n");
-    removeGame = input.nextInt();
-    boolean idCheck = db.idCheck(removeGame);
+    if (!empty){
+        System.out.println("Whoops! Your list is empty! Come back when you have at least one game on your list \n");
 
-    // Check if id is valid
+    }
+    else {
 
-    while (!idCheck){
-        System.out.println("Enter a valid ID that is associated with the game you wish to remove \n");
+
+        System.out.println("Choose a game ID number to delete from data base \n");
         removeGame = input.nextInt();
-        idCheck = db.idCheck(removeGame);
+        boolean idCheck = db.idCheck(removeGame);
+
+        // Check if id is valid
+
+        while (!idCheck){
+            System.out.println("Enter a valid ID that is associated with the game you wish to remove \n");
+            removeGame = input.nextInt();
+            idCheck = db.idCheck(removeGame);
+        }
+
+
+        System.out.println("That ID is valid. Removing game \n");
+
+        db.deleteGame(removeGame);
     }
 
 
-    System.out.println("That ID is valid. Removing game \n");
-
-
-    db.deleteGame(removeGame);
 
 }
 
-public void showList(DataBase db){
+public void showList(DataBase db) throws SQLException {
     // Prints list of all games on list
-    System.out.println("Show List \n");
 
+    Boolean empty = db.emptyCheck();
 
-    ArrayList<GameInfo> showList = db.getData();
-    System.out.println("-------------------------------------------------- ");
-    for (GameInfo game : showList){
-        System.out.println(game.toString());
+    if (!empty){
+        System.out.println("Whoops! Your list is empty! Come back when you have at least one game on your list \n");
+
     }
+    else {
 
-    System.out.println("-------------------------------------------------- \n \n");
+        System.out.println("Show List \n");
+
+        ArrayList<GameInfo> showList = db.getData();
+        System.out.println("-------------------------------------------------- ");
+        for (GameInfo game : showList) {
+            System.out.println(game.toString());
+        }
+
+        System.out.println("-------------------------------------------------- \n \n");
+    }
 }
 
 public void filterList(DataBase db) throws SQLException {
                 String filterChoice;
 
                 System.out.println("Filter games \n");
-                System.out.println("What would you like to filter by? genre or length? \n");
-                System.out.println("1 for Genre. 2 for Length \n");
-
-                filterChoice = input.nextLine();
-
-                while (!(filterChoice.matches("[1-2]+"))){
-                    System.out.println("Invalid choice. Choose 1 or 2 \n");
-                    filterChoice = input.nextLine();
-                }
-                String genreChoice;
-                String lengthChoice;
-                String lengthFilter;
 
 
+    Boolean empty = db.emptyCheck();
 
-                ArrayList<GameInfo> showList = db.getData();
-                for (GameInfo game : showList){
-                    System.out.println(game.toString());
-                }
+    if (!empty){
+        System.out.println("Whoops! Your list is empty! Come back when you have at least one game on your list \n");
 
-                if (filterChoice.matches("[1]")){
-                    // Filter list based on genre
+    }
+    else {
 
-                    boolean genreCheck;
-                    System.out.println("Choose a genre to filter by. These are the available genres to filter by. \n");
+        System.out.println("What would you like to filter by? genre or length? \n");
+        System.out.println("1 for Genre. 2 for Length \n");
 
+        filterChoice = input.nextLine();
 
-                    genreChoice = scan.nextLine().toUpperCase();
-
-                    genreCheck = db.genreCheck(genreChoice);
-
-                    while (!genreCheck){
-                        System.out.println("Enter a valid genre that is already on the list \n");
-                        genreChoice = scan.nextLine().toUpperCase();
-                        genreCheck = db.genreCheck(genreChoice);
-                    }
-
-
-                        System.out.println("Filtered List \n");
-
-
-                        ArrayList<GameInfo> filterList = db.filterGenre(genreChoice);
-                        for (GameInfo game : filterList){
-                            System.out.println(game.toString());
-                        }
+        while (!(filterChoice.matches("[1-2]+"))){
+            System.out.println("Invalid choice. Choose 1 or 2 \n");
+            filterChoice = input.nextLine();
+        }
+        String genreChoice;
+        String lengthChoice;
+        String lengthFilter;
 
 
 
-                }
-                else {
+        ArrayList<GameInfo> showList = db.getData();
+        for (GameInfo game : showList){
+            System.out.println(game.toString());
+        }
 
-                    // Filter list based on length
+        if (filterChoice.matches("[1]")){
+            // Filter list based on genre
 
-                    System.out.println("Choose a length to filter by. 1 for Short, 2 for Medium, 3 for Long, and 4 for or Very Long.");
-                    lengthChoice = input.nextLine();
-
-                    while (!(lengthChoice.matches("[1-4]+"))){
-                        System.out.println("Invalid choice. Choose 1, 2, 3, or 4 \n");
-                        lengthChoice = input.nextLine();
-                    }
-
-                    if (lengthChoice.matches("[1]")){
-                        lengthFilter = "Short";
-                    }
-                    else if (lengthChoice.matches("[2]")){
-                        lengthFilter = "Medium";
-                    }
-                    else if (lengthChoice.matches("[3]")){
-                        lengthFilter = "Long";
-                    }
-                    else {
-                        lengthFilter = "Very Long";
-                    }
-
-                    ArrayList<GameInfo> filterList = db.filterLength(lengthFilter);
-                    for (GameInfo game : filterList){
-                        System.out.println(game.toString());
-                    }
+            boolean genreCheck;
+            System.out.println("Choose a genre to filter by. These are the available genres to filter by. \n");
 
 
+            genreChoice = scan.nextLine().toUpperCase();
 
-                }
+            genreCheck = db.genreCheck(genreChoice);
+
+            while (!genreCheck){
+                System.out.println("Enter a valid genre that is already on the list \n");
+                genreChoice = scan.nextLine().toUpperCase();
+                genreCheck = db.genreCheck(genreChoice);
+            }
+
+
+            System.out.println("Filtered List \n");
+
+
+            ArrayList<GameInfo> filterList = db.filterGenre(genreChoice);
+            for (GameInfo game : filterList){
+                System.out.println(game.toString());
+            }
+
+
+
+        }
+        else {
+
+            // Filter list based on length
+
+            System.out.println("Choose a length to filter by. 1 for Short, 2 for Medium, 3 for Long, and 4 for or Very Long.");
+            lengthChoice = input.nextLine();
+
+            while (!(lengthChoice.matches("[1-4]+"))){
+                System.out.println("Invalid choice. Choose 1, 2, 3, or 4 \n");
+                lengthChoice = input.nextLine();
+            }
+
+            if (lengthChoice.matches("[1]")){
+                lengthFilter = "Short";
+            }
+            else if (lengthChoice.matches("[2]")){
+                lengthFilter = "Medium";
+            }
+            else if (lengthChoice.matches("[3]")){
+                lengthFilter = "Long";
+            }
+            else {
+                lengthFilter = "Very Long";
+            }
+
+            ArrayList<GameInfo> filterList = db.filterLength(lengthFilter);
+            for (GameInfo game : filterList){
+                System.out.println(game.toString());
+            }
+
+
+
+        }
+
+
+    }
+
 }
 
-public void pickRandomGame(DataBase db) {
+public void pickRandomGame(DataBase db) throws SQLException {
 
 
     // Picks random game from list
 
-    System.out.println("Choose a random game \n");
+    Boolean empty = db.emptyCheck();
 
-    int randomID;
-    String randomName;
+    if (!empty){
+        System.out.println("Whoops! Your list is empty! Come back when you have at least one game on your list \n");
 
-    randomID = db.randID();
-    System.out.println("Random ID: " + randomID + " \n");
-    randomName = db.randName(randomID);
+    }
+    else {
 
-    System.out.println("You're random game is: " + randomName + " ! \n");
 
+        System.out.println("Choose a random game \n");
+
+        int randomID;
+        String randomName;
+
+        randomID = db.randID();
+        System.out.println("Random ID: " + randomID + " \n");
+        randomName = db.randName(randomID);
+
+        System.out.println("You're random game is: " + randomName + " ! \n");
+    }
 }
 
 public void exitProgram(){

@@ -13,14 +13,8 @@ import java.sql.PreparedStatement;
 public class DataBase {
 
 
-//DBConnect.forName("org.sqlite.JDBC");
-
-
-
         private String dbName;
         private String url;
-
-//    Class.forName("org.sqlite.JDBC");
 
         public DataBase(String dbName) {
             this.dbName = dbName;
@@ -128,6 +122,37 @@ public class DataBase {
 
         }
 
+        public Boolean emptyCheck() {
+           String sql = "SELECT id, name, genre, length FROM games";
+
+           boolean emptyBool = true;
+
+            try(PreparedStatement prepState = connectDB(dbName).prepareStatement(sql)){
+
+
+                ResultSet empty = prepState.executeQuery();
+
+                if (!empty.next()){
+                    System.out.println("Empty \n");
+                    emptyBool = false;
+
+                }
+
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+
+            return emptyBool;
+        }
+
+
+
+
+
+
+
 
         public Boolean nameCheck(String name) throws SQLException {
             String sql = "SELECT EXISTS (SELECT 1 FROM games WHERE name = ?)";
@@ -153,7 +178,7 @@ public class DataBase {
                         else {
                             checkStatement = "Name: " + name + " is new. ";
                             System.out.println(checkStatement);
-//
+
                         }
 
 
@@ -187,7 +212,7 @@ public class DataBase {
                     else {
                         checkStatement = "Genre: " + genre + " doesn't exist. ";
                         System.out.println(checkStatement);
-//                        exists = false;
+
                     }
 
 
