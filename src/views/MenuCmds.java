@@ -2,7 +2,6 @@ package views;
 
 import models.GameInfo;
 import controllers.DataBase;
-import views.MenuCmds;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -19,12 +18,13 @@ public void programIntro(){
     System.out.println("In this program you will create a list of video games you wish to play \n");
     System.out.println("After you enter the name, you can select genre, and length of the game");
     System.out.println("You can choose to filter your list by variables like length of game or genre \n");
-    System.out.println("NOTE: This program uses a SQLite database and will require the user to have a SQLite JDBC driver installed on their device. \n");
+    System.out.println("NOTE 1: This program uses a SQLite database and will require the user to have a SQLite JDBC driver installed on their device. \n");
+    System.out.println("NOTE 2: It is recommended to add at least 1 game to your list before using other menu options \n");
 
 
 }
 
-public GameInfo addAGame(GameInfo newGame, DataBase db) throws SQLException {
+public void addAGame(GameInfo newGame, DataBase db) throws SQLException {
     // Add new game info and store into database
 
     System.out.println("Add a game \n");
@@ -101,7 +101,7 @@ public GameInfo addAGame(GameInfo newGame, DataBase db) throws SQLException {
 
     db.addData(newGame.getName(), newGame.getGenre(), newGame.getLength());
 
-    return newGame;
+
 }
 
 public void removeAGame(DataBase db) throws SQLException {
@@ -151,20 +151,20 @@ public void showList(DataBase db){
 }
 
 public void filterList(DataBase db) throws SQLException {
-                int filterChoice;
+                String filterChoice;
 
                 System.out.println("Filter games \n");
                 System.out.println("What would you like to filter by? genre or length? \n");
                 System.out.println("1 for Genre. 2 for Length \n");
 
-                filterChoice = input.nextInt();
+                filterChoice = input.nextLine();
 
-                while (filterChoice != 1 && filterChoice != 2){
+                while (!(filterChoice.matches("[1-2]+"))){
                     System.out.println("Invalid choice. Choose 1 or 2 \n");
-                    filterChoice = input.nextInt();
+                    filterChoice = input.nextLine();
                 }
                 String genreChoice;
-                int lengthChoice;
+                String lengthChoice;
                 String lengthFilter;
 
 
@@ -174,7 +174,7 @@ public void filterList(DataBase db) throws SQLException {
                     System.out.println(game.toString());
                 }
 
-                if (filterChoice == 1){
+                if (filterChoice.matches("[1]")){
                     // Filter list based on genre
 
                     boolean genreCheck;
@@ -208,20 +208,20 @@ public void filterList(DataBase db) throws SQLException {
                     // Filter list based on length
 
                     System.out.println("Choose a length to filter by. 1 for Short, 2 for Medium, 3 for Long, and 4 for or Very Long.");
-                    lengthChoice = input.nextInt();
+                    lengthChoice = input.nextLine();
 
-                    while (lengthChoice != 1 && lengthChoice != 2 && lengthChoice != 3 && lengthChoice != 4){
+                    while (!(lengthChoice.matches("[1-4]+"))){
                         System.out.println("Invalid choice. Choose 1, 2, 3, or 4 \n");
-                        lengthChoice = input.nextInt();
+                        lengthChoice = input.nextLine();
                     }
 
-                    if (lengthChoice == 1){
+                    if (lengthChoice.matches("[1]")){
                         lengthFilter = "Short";
                     }
-                    else if (lengthChoice == 2){
+                    else if (lengthChoice.matches("[2]")){
                         lengthFilter = "Medium";
                     }
-                    else if (lengthChoice == 3){
+                    else if (lengthChoice.matches("[3]")){
                         lengthFilter = "Long";
                     }
                     else {
